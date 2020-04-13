@@ -2,8 +2,23 @@ import React, { Component } from "react";
 import Square from "./square";
 
 class Board extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      squares: Array(9).fill(null), // declare a squares array comprising 9 null elements, one for each square
+    };
+  }
+
+  fillWithX(i) {
+    const squares = this.state.squares.slice();
+    squares[i] = "X";
+    this.setState({ squares });
+  }
+
   renderSquare(i) {
-    return <Square value={i} />;
+    return (
+      <Square value={this.state.squares[i]} onClick={() => this.fillWithX(i)} />
+    ); //declare a value prop to be passed to Square
   }
   render() {
     const status = "Next player: X";
