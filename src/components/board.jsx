@@ -10,10 +10,15 @@ class Board extends Component {
     };
   }
 
+  //fill a square with a player's move (X or O) and allow players to take turns
   fillWithX(i) {
     const squares = this.state.squares.slice();
+
+    if (calculateWinner(squares)) {
+      return;
+    }
     squares[i] = this.state.xIsNext ? "X" : "O"; // if player hasn't played, "X" player moves, else "O" player moves
-    this.setState({ squares: squares, xIsNext: !this.state.xIsNext }); //after a player moves, flip xIsNext so that the other player can move
+    this.setState({ squares: squares, xIsNext: !this.state.xIsNext }); //after a player moves, update the square with the player's move and flip xIsNext to false so that the other player can move
   }
 
   renderSquare(i) {
@@ -22,7 +27,13 @@ class Board extends Component {
     ); //declare a value prop to be passed to Square
   }
   render() {
-    const status = "Next Player is : " + (this.state.xIsNext ? "X" : "O");
+    const winner = calculateWinner(this.state.squares);
+    let status;
+    if (winner) {
+      status = "Winner is: " + winner;
+    } else {
+      status = "Next Player is : " + (this.state.xIsNext ? "X" : "O");
+    }
 
     return (
       <div>
@@ -46,4 +57,28 @@ class Board extends Component {
     );
   }
 }
+
+//helper function to determine the winner of a game
+function calculateWinner(squares) {
+  const lines = [
+    //lines contain arrays that correspond to a winning move
+    [0, 1, 2],
+    [3, 4, 5],
+    [6, 7, 8],
+    [0, 3, 6],
+    [1, 4, 7],
+    [2, 5, 8],
+    [0, 4, 8],
+    [2, 4, 6],
+  ];
+
+  for (let i = 0; i < lines.length; i++) {
+    const [a, b, c] = lines[i];
+    if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
+      return squares[a];
+    }
+  }
+  return null;
+}
+
 export default Board;
